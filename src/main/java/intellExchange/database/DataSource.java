@@ -112,7 +112,7 @@ public class DataSource {
             result_svi.add(generateServiceItem(item));
             break;
         }
-        
+
         return result_svi.size() > 0 ? result_svi.get(0) : null;
 
     }
