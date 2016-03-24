@@ -10,6 +10,7 @@ import com.amazonaws.services.dynamodbv2.model.ScanRequest;
 import com.amazonaws.services.dynamodbv2.model.ScanResult;
 import intellExchange.Constants;
 import intellExchange.model.Category;
+import intellExchange.model.PopularCategory;
 import intellExchange.model.ServiceItem;
 
 import java.util.*;
@@ -44,7 +45,7 @@ public class DataSource {
     }
 
     public static List<ServiceItem> getAllServiceItem() {
-        Table table = dynamoDB.getTable("service_items  ");
+        Table table = dynamoDB.getTable("service_items");
         ItemCollection<ScanOutcome> result = table.scan();
         List<ServiceItem> res = new ArrayList<>();
         for (Item item : result) {
@@ -115,5 +116,20 @@ public class DataSource {
 
         return result_svi.size() > 0 ? result_svi.get(0) : null;
 
+    }
+
+    public static List<PopularCategory> getPopularCategory() {
+        ScanRequest scanRequest = new ScanRequest()
+                .withTableName("popular_category");
+        ScanResult result = client.scan(scanRequest);
+        List<PopularCategory> res = new ArrayList<>();
+        for (Map<String, AttributeValue> item : result.getItems()){
+            System.out.println(item);
+            String name = item.get("name").getS();
+            Integer popularity = Integer.valueOf(item.get("popularity").getN());
+            PopularCategory popCat = new PopularCategory(name, popularity);
+            res.add(popCat);
+        }
+        return res;
     }
 }
